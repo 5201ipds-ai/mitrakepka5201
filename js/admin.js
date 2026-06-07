@@ -64,8 +64,10 @@ async function loginAdmin() {
       return;
     }
 
-    sessionStorage.setItem("adminLogin", "true");
-    tampilkanDataAdmin();
+sessionStorage.setItem("adminLogin", "true");
+sessionStorage.setItem("adminUser", username);
+sessionStorage.setItem("adminPass", password);
+tampilkanDataAdmin();
 
   } catch (error) {
     console.log("ERROR LOGIN ADMIN:", error);
@@ -88,7 +90,11 @@ async function tampilkanDataAdmin() {
   `;
 
   try {
-    const hasil = await ambilJSONP(`${API_URL}?mode=public`);
+const username = sessionStorage.getItem("adminUser");
+const password = sessionStorage.getItem("adminPass");
+const hasil = await ambilJSONP(
+  `${API_URL}?mode=admin&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+);
 
     semuaDataAdmin = hasil.data || [];
     dataTampilAdmin = [...semuaDataAdmin];
@@ -250,6 +256,9 @@ function halamanBerikutnyaAdmin() {
 
 function logoutAdmin() {
   sessionStorage.removeItem("adminLogin");
+  sessionStorage.removeItem("adminUser");
+  sessionStorage.removeItem("adminPass");
+
   location.reload();
 }
 
